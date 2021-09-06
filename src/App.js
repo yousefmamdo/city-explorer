@@ -18,7 +18,7 @@ class App extends React.Component {
   getLocationData = async (event) => {
     event.preventDefault();
     const cityName = event.target.cityName.value;
-    const myKey = 'pk.a47d4213dbce9a84687e69e822dfacad';
+    const myKey = 'pk.8897249cb61dcbb12b8e61d28cf54442';
     const URL = `https://eu1.locationiq.com/v1/search.php?key=${myKey}&q=${cityName}&format=json`;
     try 
     {
