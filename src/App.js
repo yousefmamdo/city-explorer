@@ -2,6 +2,7 @@ import axios from 'axios';
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
+
 class App extends React.Component {
 
   constructor(props) {
@@ -10,6 +11,7 @@ class App extends React.Component {
       latitude: '',
       longitude: '',
       display_name: '',
+      weatherData:[],
       mapFlag: false,
       displayErr: false
     }
@@ -27,7 +29,22 @@ class App extends React.Component {
         longitude: resResult.data[0].lon,
         display_name: resResult.data[0].display_name,
         mapFlag: true
+        
       })
+      const url = `https://lap7-abi.herokuapp.com/weather?searchQuery=${this.state.display_name}&lat=${this.state.latitude}&lon=${this.state.longitude}`;
+      const WearherRes = await axios.get(url);
+      this.setState({
+        weatherData:WearherRes.data
+       
+      })
+     
+       
+      
+    
+
+  
+
+
     }
     catch
     {
@@ -60,8 +77,16 @@ class App extends React.Component {
 
         {this.state.mapFlag &&
 
-          <img src={`https://maps.locationiq.com/v3/staticmap?key=pk.43fed3791d35ddb76aa14f749c6d3080&center=${this.state.latitude},${this.state.longitude}`} class="img-thumbnail" alt='map' />}
-
+          <img src={`https://maps.locationiq.com/v3/staticmap?key=pk.43fed3791d35ddb76aa14f749c6d3080&center=${this.state.latitude},${this.state.longitude}`} class="img-thumbnail" alt='mapm' />}
+{this.state.weatherData.map(item=>{
+                    return ( 
+                    <>
+                    <p>date: {item.date}</p>
+                    <p>description: {item.description}</p>
+                    </>
+    )
+  })}
+   
         {this.state.displayErr && <p>Sorry Error</p>}
 
 
