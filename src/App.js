@@ -1,5 +1,7 @@
 import axios from 'axios';
 import React from 'react';
+import Weather from './components/Weather';
+import Movie from './components/Movie';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 class App extends React.Component {
@@ -10,6 +12,8 @@ class App extends React.Component {
       latitude:'',
       longitude:'',
       display_name:'',
+      weatherData: [],
+      movieData: [],
       mapFlag:false,
       displayErr:false
     }
@@ -20,15 +24,23 @@ class App extends React.Component {
     const cityName = event.target.cityName.value;
     const myKey = 'pk.8897249cb61dcbb12b8e61d28cf54442';
     const URL = `https://eu1.locationiq.com/v1/search.php?key=${myKey}&q=${cityName}&format=json`;
+    const weatherURL = `https://yousef-catiy-exploer.herokuapp.com/weather/?city=${cityName}`;
+    const moviesURL = `https://yousef-catiy-exploer.herokuapp.com/movies?query=${cityName}`;
+
     try 
     {
       let resResult = await axios.get(URL);
+      let newWeather = await axios.get(weatherURL);
+      let newMovie = await axios.get(moviesURL);
       this.setState({
         latitude:resResult.data[0].lat,
         longitude:resResult.data[0].lon,
         display_name:resResult.data[0].display_name,
+        weatherData: newWeather.data,
+        movieData: newMovie.data,
         mapFlag:true
       })
+      console.log(this.movieData);
     }
     catch 
     {
@@ -39,10 +51,37 @@ class App extends React.Component {
     }
 
   }
-  
+
+  // getMovieData = async () => {
+
+  //   const url = `https://yousef-catiy-exploer.herokuapp.com/movies?query=${this.state.cityName}`;
+  //   axios
+  //     .get(url)
+  //     .then(result => {
+  //       this.setState({
+  //         movieData: result.data,
+  //       })
+  //       console.log(this.state.movieData);
+  //     })
+  //     .catch(err => console.log(err))
+
+  // }
+  // getWeatherData = async () => {
+
+  //   const url = `https://yousef-catiy-exploer.herokuapp.com//weather/?city=${this.state.cityName}`;
+  //   axios
+  //     .get(url)
+  //     .then(result => {
+  //       this.setState({
+  //         weatherData: result.data,
+  //       })
+  //            })
+  //     .catch(err => console.log(err))
+
+  // }
   render(){
     return(
-      <div class="p-3 mb-2 bg-light text-dark">
+      <>
       <h1>Location App</h1>
       <form onSubmit={this.getLocationData}  class="form-inline">
    
@@ -54,7 +93,7 @@ class App extends React.Component {
  
   <button type="submit" class="btn btn-primary">Exploler</button>
 </form>
-      {/* render the data */}
+   
       {this.state.mapFlag &&  <p>Display name : {this.state.display_name}</p>}
       {this.state.mapFlag &&  <p>latitude : {this.state.latitude}</p>}
       {this.state.mapFlag &&  <p>longitude : {this.state.longitude}</p>}
@@ -65,8 +104,20 @@ class App extends React.Component {
 
       {this.state.displayErr && <p>Sorry Error</p>}
       
+      <Weather
+            weatherData={this.state.weatherData}
+          
 
-      </div>
+          />
+      
+            
+              <Movie
+               movieData={this.state.movieData}
+              />
+
+        
+
+      </>
     )
   }
 }
